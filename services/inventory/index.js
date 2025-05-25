@@ -2,6 +2,22 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const products = require('./products.json');
 
+function startInventoryServer(server) {
+  server.addService(InventoryService, {
+    SearchAllProducts: (empty, callback) => {
+      callback(null, { products });
+    },
+
+    // Adicione esta função logo após:
+    SearchProductByID: (payload, callback) => {
+      const id = payload.request.id;
+      const product = products.find(p => p.id === id);
+      // Se não achar, product será undefined; tudo bem pra um exemplo didático
+      callback(null, product);
+    },
+  });
+}
+
 const packageDefinition = protoLoader.loadSync('proto/inventory.proto', {
     keepCase: true,
     longs: String,
