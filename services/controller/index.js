@@ -42,6 +42,19 @@ app.get('/shipping/:cep', (req, res, next) => {
     );
 });
 
+app.get('/product/:id', (req, res) => {
+  inventory.SearchProductByID({ id: parseInt(req.params.id, 10) }, (err, product) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Erro interno ao buscar produto' });
+    }
+    if (!product) {
+      return res.status(404).json({ error: 'Produto não encontrado' });
+    }
+    res.json(product);
+  });
+});
+
 /**
  * Inicia o router
  */
